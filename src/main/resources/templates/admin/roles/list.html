@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/base}">
+<head>
+    <title>Roles</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2">
+                <i class="bi bi-shield-lock"></i> Gestión de Roles
+            </h1>
+            <a th:href="@{/admin/roles/create}" class="btn btn-primary">
+                <i class="bi bi-shield-plus"></i> Nuevo Rol
+            </a>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-list-ul"></i> Lista de Roles
+                    <span class="badge bg-secondary" th:text="${roles.size()}">0</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Usuarios Asignados</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="role : ${roles}">
+                                <td th:text="${role.id}">1</td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${role.nombre == 'ADMIN'} ? 'bg-danger' : 
+                                                         ${role.nombre == 'PROFESOR'} ? 'bg-warning' : 'bg-info'">
+                                        <i class="bi bi-shield-check"></i>
+                                        <span th:text="${role.nombre}"></span>
+                                    </span>
+                                </td>
+                                <td th:text="${role.descripcion} ?: 'Sin descripción'">Descripción</td>
+                                <td>
+                                    <span class="badge bg-secondary" 
+                                          th:text="${role.usuarios != null ? role.usuarios.size() : 0}">
+                                        0
+                                    </span>
+                                    usuarios
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a th:href="@{/admin/roles/detail/{id}(id=${role.id})}" 
+                                           class="btn btn-outline-info" title="Ver">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a th:href="@{/admin/roles/edit/{id}(id=${role.id})}" 
+                                           class="btn btn-outline-primary" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-outline-danger" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#deleteRoleModal"
+                                                th:data-id="${role.id}"
+                                                th:data-name="${role.nombre}"
+                                                th:disabled="${role.usuarios != null and role.usuarios.size() > 0}"
+                                                title="Eliminar">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${roles.empty}">
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    <i class="bi bi-shield display-4 d-block mb-2"></i>
+                                    No se encontraron roles
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Información sobre roles -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-info-circle"></i> Información sobre Roles
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card bg-danger text-white mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="bi bi-shield-check"></i> ADMIN
+                                </h6>
+                                <p class="card-text small">
+                                    Acceso completo al sistema. Puede gestionar usuarios, roles y ver todas las secciones.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-warning text-dark mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="bi bi-person-badge"></i> PROFESOR
+                                </h6>
+                                <p class="card-text small">
+                                    Puede ver reportes y realizar consultas avanzadas. No puede gestionar usuarios ni roles.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-info text-white mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="bi bi-mortarboard"></i> ESTUDIANTE
+                                </h6>
+                                <p class="card-text small">
+                                    Acceso limitado a su perfil personal. No puede ver reportes ni gestionar otros usuarios.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para eliminar rol -->
+    <div class="modal fade" id="deleteRoleModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle"></i> Confirmar Eliminación
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de eliminar este rol? Esta acción no se puede deshacer.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form id="deleteRoleForm" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                // Configurar modal de eliminación de rol
+                $('#deleteRoleModal').on('show.bs.modal', function(event) {
+                    var button = $(event.relatedTarget);
+                    var roleId = button.data('id');
+                    var roleName = button.data('name');
+                    var modal = $(this);
+                    modal.find('.modal-body').text('¿Estás seguro de eliminar el rol "' + roleName + '"?');
+                    modal.find('#deleteRoleForm').attr('action', '/admin/roles/delete/' + roleId);
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>

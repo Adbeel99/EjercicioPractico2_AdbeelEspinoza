@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/base}">
+<head>
+    <title>Reportes</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2">
+                <i class="bi bi-file-text"></i> Reportes del Sistema
+            </h1>
+            <div>
+                <span class="badge bg-warning">
+                    <i class="bi bi-person-badge"></i> PROFESOR
+                </span>
+            </div>
+        </div>
+        
+        <!-- Filtros de reporte -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-funnel"></i> Filtros de Búsqueda
+                </h5>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/profesor/reportes}" method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Rol</label>
+                        <select class="form-select" name="rol">
+                            <option value="">Todos los roles</option>
+                            <option value="ESTUDIANTE">Estudiantes</option>
+                            <option value="PROFESOR">Profesores</option>
+                            <option value="ADMIN">Administradores</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">Estado</label>
+                        <select class="form-select" name="estado">
+                            <option value="">Todos</option>
+                            <option value="true">Activos</option>
+                            <option value="false">Inactivos</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">Fecha Desde</label>
+                        <input type="date" class="form-control" name="fechaInicio">
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">Fecha Hasta</label>
+                        <input type="date" class="form-control" name="fechaFin">
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-search"></i> Generar Reporte
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" id="btnExportar">
+                                <i class="bi bi-download"></i> Exportar a CSV
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Resumen de reportes -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body text-center">
+                        <h6 class="card-title">Total Usuarios</h6>
+                        <h2 th:text="${stats.totalUsers}">0</h2>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body text-center">
+                        <h6 class="card-title">Estudiantes</h6>
+                        <h2 th:text="${stats.usersByRole.get('ESTUDIANTE') ?: 0}">0</h2>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body text-center">
+                        <h6 class="card-title">Profesores</h6>
+                        <h2 th:text="${stats.usersByRole.get('PROFESOR') ?: 0}">0</h2>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body text-center">
+                        <h6 class="card-title">% Activos</h6>
+                        <h2 th:text="${#numbers.formatDecimal(stats.activePercentage, 1, 1)} + '%'">0%</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Últimos usuarios registrados -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-clock-history"></i> Últimos Usuarios Registrados
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="tablaUltimosUsuarios">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre Completo</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>Fecha Registro</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user, stat : ${latestUsers}">
+                                <td th:text="${stat.count}">1</td>
+                                <td>
+                                    <span th:text="${user.nombre} + ' ' + ${user.apellido}">Nombre</span>
+                                </td>
+                                <td th:text="${user.email}">email@ejemplo.com</td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${user.rol.nombre == 'ADMIN'} ? 'bg-danger' : 
+                                                         ${user.rol.nombre == 'PROFESOR'} ? 'bg-warning' : 'bg-info'">
+                                        <span th:text="${user.rol.nombre}">ROL</span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <small th:text="${#temporals.format(user.fechaCreacion, 'dd/MM/yyyy HH:mm')}">
+                                        01/01/2024
+                                    </small>
+                                </td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${user.activo} ? 'bg-success' : 'bg-secondary'">
+                                        <span th:text="${user.activo} ? 'Activo' : 'Inactivo'">Activo</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr th:if="${latestUsers.empty}">
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="bi bi-people display-4 d-block mb-2"></i>
+                                    No hay usuarios registrados
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Usuarios activos -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-check-circle"></i> Usuarios Activos
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="tablaUsuariosActivos">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>Última Actividad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user : ${activeUsers}">
+                                <td th:text="${user.nombre}">Nombre</td>
+                                <td th:text="${user.apellido}">Apellido</td>
+                                <td th:text="${user.email}">email@ejemplo.com</td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${user.rol.nombre == 'ADMIN'} ? 'bg-danger' : 
+                                                         ${user.rol.nombre == 'PROFESOR'} ? 'bg-warning' : 'bg-info'">
+                                        <span th:text="${user.rol.nombre}">ROL</span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <small th:text="${#temporals.format(user.fechaCreacion, 'dd/MM/yyyy')}">
+                                        01/01/2024
+                                    </small>
+                                </td>
+                            </tr>
+                            <tr th:if="${activeUsers.empty}">
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    <i class="bi bi-person-check display-4 d-block mb-2"></i>
+                                    No hay usuarios activos
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                // Inicializar DataTables
+                $('#tablaUltimosUsuarios').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+                    },
+                    pageLength: 5,
+                    order: [[4, 'desc']]
+                });
+                
+                $('#tablaUsuariosActivos').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+                    },
+                    pageLength: 10
+                });
+                
+                // Exportar a CSV
+                $('#btnExportar').on('click', function() {
+                    exportTableToCSV('tablaUltimosUsuarios', 'ultimos_usuarios.csv');
+                });
+                
+                // Función para exportar tabla a CSV
+                function exportTableToCSV(tableId, filename) {
+                    var table = document.getElementById(tableId);
+                    var rows = table.querySelectorAll('tr');
+                    var csv = [];
+                    
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = [], cols = rows[i].querySelectorAll('td, th');
+                        
+                        for (var j = 0; j < cols.length; j++) {
+                            row.push(cols[j].innerText);
+                        }
+                        
+                        csv.push(row.join(','));
+                    }
+                    
+                    // Descargar archivo
+                    var csvFile = new Blob([csv.join('\n')], {type: 'text/csv'});
+                    var downloadLink = document.createElement('a');
+                    downloadLink.download = filename;
+                    downloadLink.href = window.URL.createObjectURL(csvFile);
+                    downloadLink.style.display = 'none';
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>

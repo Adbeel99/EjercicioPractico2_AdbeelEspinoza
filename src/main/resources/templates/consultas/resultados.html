@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/base}">
+<head>
+    <title>Resultados</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2" th:text="${pageTitle}">Resultados de Consulta</h1>
+            <a th:href="@{/consultas/avanzadas}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Nueva Búsqueda
+            </a>
+        </div>
+        
+        <!-- Información de la consulta -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-search"></i> Parámetros de Búsqueda
+                </h5>
+            </div>
+            <div class="card-body">
+                <div th:switch="${queryType}">
+                    <!-- Consulta por rol -->
+                    <div th:case="'por-rol'" class="alert alert-info">
+                        <i class="bi bi-shield"></i>
+                        <strong>Consulta por Rol:</strong> Mostrando usuarios con rol 
+                        "<span th:text="${rol}" class="badge bg-primary"></span>"
+                    </div>
+                    
+                    <!-- Consulta por fecha -->
+                    <div th:case="'por-fecha'" class="alert alert-info">
+                        <i class="bi bi-calendar"></i>
+                        <strong>Consulta por Rango de Fechas:</strong> 
+                        Desde <span th:text="${#temporals.format(fechaInicio, 'dd/MM/yyyy HH:mm')}" class="badge bg-secondary"></span>
+                        hasta <span th:text="${#temporals.format(fechaFin, 'dd/MM/yyyy HH:mm')}" class="badge bg-secondary"></span>
+                    </div>
+                    
+                    <!-- Consulta por búsqueda -->
+                    <div th:case="'por-busqueda'" class="alert alert-info">
+                        <i class="bi bi-text-left"></i>
+                        <strong>Búsqueda Parcial:</strong> Término de búsqueda: 
+                        "<span th:text="${termino}" class="badge bg-secondary"></span>"
+                    </div>
+                    
+                    <!-- Consulta ordenada por fecha -->
+                    <div th:case="'ordenados-fecha'" class="alert alert-info">
+                        <i class="bi bi-sort-down"></i>
+                        <strong>Usuarios Ordenados por Fecha:</strong> 
+                        Más recientes primero
+                    </div>
+                    
+                    <!-- Estadísticas -->
+                    <div th:case="'estadisticas'" class="alert alert-info">
+                        <i class="bi bi-graph-up"></i>
+                        <strong>Estadísticas del Sistema:</strong> 
+                        Resumen general de usuarios
+                    </div>
+                    
+                    <!-- Activos vs Inactivos -->
+                    <div th:case="'activos-inactivos'" class="alert alert-info">
+                        <i class="bi bi-toggle-on"></i>
+                        <strong>Comparación Activos/Inactivos:</strong> 
+                        Análisis de estados de usuario
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Resultados de la consulta -->
+        <div th:switch="${queryType}">
+            
+            <!-- Para consultas que devuelven lista de usuarios -->
+            <div th:case="'por-rol'">
+                <div th:replace="fragments/resultados-usuarios :: resultados-usuarios"></div>
+            </div>
+            
+            <div th:case="'por-fecha'">
+                <div th:replace="fragments/resultados-usuarios :: resultados-usuarios"></div>
+            </div>
+            
+            <div th:case="'por-busqueda'">
+                <div th:replace="fragments/resultados-usuarios :: resultados-usuarios"></div>
+            </div>
+            
+            <div th:case="'ordenados-fecha'">
+                <div th:replace="fragments/resultados-usuarios :: resultados-usuarios"></div>
+            </div>
+            
+            <!-- Para estadísticas -->
+            <div th:case="'estadisticas'">
+                <div th:replace="fragments/resultados-estadisticas :: resultados-estadisticas"></div>
+            </div>
+            
+            <!-- Para activos vs inactivos -->
+            <div th:case="'activos-inactivos'">
+                <div th:replace="fragments/resultados-activos-inactivos :: resultados-activos-inactivos"></div>
+            </div>
+        </div>
+        
+        <!-- Volver a consultas -->
+        <div class="text-center mt-4">
+            <a th:href="@{/consultas/avanzadas}" class="btn btn-primary">
+                <i class="bi bi-search"></i> Realizar Otra Consulta
+            </a>
+        </div>
+    </div>
+</body>
+</html>

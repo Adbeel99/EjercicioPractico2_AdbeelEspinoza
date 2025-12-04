@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/base}">
+<head>
+    <title>Mis Datos</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2">
+                <i class="bi bi-person-gear"></i> Mis Datos Personales
+            </h1>
+            <div>
+                <span class="badge bg-info">
+                    <i class="bi bi-mortarboard"></i> ESTUDIANTE
+                </span>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-pencil-square"></i> Editar Información
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/estudiante/mis-datos/actualizar}" th:object="${user}" method="post" id="formMisDatos">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="nombre" class="form-label">Nombre *</label>
+                                    <input type="text" class="form-control" id="nombre" 
+                                           th:field="*{nombre}" required>
+                                    <div class="invalid-feedback">
+                                        Por favor ingresa tu nombre.
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="apellido" class="form-label">Apellido *</label>
+                                    <input type="text" class="form-control" id="apellido" 
+                                           th:field="*{apellido}" required>
+                                    <div class="invalid-feedback">
+                                        Por favor ingresa tu apellido.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">@</span>
+                                    <input type="email" class="form-control" id="email" 
+                                           th:field="*{email}" required readonly>
+                                </div>
+                                <small class="text-muted">El email no se puede modificar.</small>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="password" class="form-label">Nueva Contraseña</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" id="password" 
+                                               name="password" placeholder="Dejar vacío para no cambiar">
+                                        <button class="btn btn-outline-secondary toggle-password" type="button">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                    <small class="text-muted">Mínimo 6 caracteres</small>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
+                                    <input type="password" class="form-control" id="confirmPassword" 
+                                           placeholder="Confirmar nueva contraseña">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Información del Rol</label>
+                                <div class="form-control bg-light">
+                                    <strong>Rol:</strong> 
+                                    <span class="badge bg-info" th:text="${user.rolNombre}">ESTUDIANTE</span>
+                                    <br>
+                                    <strong>Estado:</strong> 
+                                    <span class="badge" 
+                                          th:classappend="${user.activo} ? 'bg-success' : 'bg-secondary'"
+                                          th:text="${user.activo} ? 'Activo' : 'Inactivo'">
+                                        Activo
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Guardar Cambios
+                                </button>
+                                <a th:href="@{/estudiante/perfil}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left"></i> Volver al Perfil
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-info-circle"></i> Información de la Cuenta
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <div class="avatar-circle mb-3">
+                                <i class="bi bi-person display-2 text-primary"></i>
+                            </div>
+                            <h5 th:text="${user.nombre} + ' ' + ${user.apellido}">Nombre Apellido</h5>
+                            <p class="text-muted" th:text="${user.email}">email@ejemplo.com</p>
+                        </div>
+                        
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <span>Fecha de Registro:</span>
+                                    <strong th:text="${#temporals.format(user.fechaCreacion, 'dd/MM/yyyy')}">
+                                        01/01/2024
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <span>Rol Asignado:</span>
+                                    <strong>
+                                        <span class="badge bg-info" th:text="${user.rolNombre}">ESTUDIANTE</span>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <span>Estado de Cuenta:</span>
+                                    <strong>
+                                        <span class="badge" 
+                                              th:classappend="${user.activo} ? 'bg-success' : 'bg-secondary'"
+                                              th:text="${user.activo} ? 'Activa' : 'Inactiva'">
+                                            Activa
+                                        </span>
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info mt-3">
+                            <small>
+                                <i class="bi bi-lightbulb"></i>
+                                <strong>Nota:</strong> Solo puedes modificar tu información personal. 
+                                Para cambios en el rol o estado, contacta a un administrador.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <i class="bi bi-shield-check"></i> Seguridad de la Cuenta
+                        </h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle text-success"></i>
+                                <small>Autenticación segura</small>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle text-success"></i>
+                                <small>Contraseña encriptada</small>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle text-success"></i>
+                                <small>Sesión protegida</small>
+                            </li>
+                        </ul>
+                        <div class="d-grid">
+                            <a href="#" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-key"></i> Cambiar Contraseña
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                // Validación de contraseñas
+                $('#confirmPassword').on('keyup', function() {
+                    const password = $('#password').val();
+                    const confirmPassword = $(this).val();
+                    
+                    if (password !== confirmPassword) {
+                        $(this).addClass('is-invalid');
+                        $(this).removeClass('is-valid');
+                    } else {
+                        $(this).removeClass('is-invalid');
+                        $(this).addClass('is-valid');
+                    }
+                });
+                
+                // Toggle password visibility
+                $('.toggle-password').on('click', function() {
+                    const input = $(this).parent().find('input');
+                    const icon = $(this).find('i');
+                    
+                    if (input.attr('type') === 'password') {
+                        input.attr('type', 'text');
+                        icon.removeClass('bi-eye').addClass('bi-eye-slash');
+                    } else {
+                        input.attr('type', 'password');
+                        icon.removeClass('bi-eye-slash').addClass('bi-eye');
+                    }
+                });
+                
+                // Validación del formulario
+                $('#formMisDatos').on('submit', function(e) {
+                    const password = $('#password').val();
+                    const confirmPassword = $('#confirmPassword').val();
+                    
+                    if (password && password.length < 6) {
+                        e.preventDefault();
+                        alert('La contraseña debe tener al menos 6 caracteres');
+                        return false;
+                    }
+                    
+                    if (password && password !== confirmPassword) {
+                        e.preventDefault();
+                        alert('Las contraseñas no coinciden');
+                        return false;
+                    }
+                });
+            });
+        </script>
+        
+        <style>
+            .avatar-circle {
+                width: 100px;
+                height: 100px;
+                background-color: #e9ecef;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto;
+            }
+        </style>
+    </div>
+</body>
+</html>

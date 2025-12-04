@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/base}">
+<head>
+    <title>Consultas Avanzadas</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h1 class="mb-4">
+            <i class="bi bi-search"></i> Consultas Avanzadas
+        </h1>
+        
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i>
+            Esta sección está disponible para usuarios con rol <strong>PROFESOR</strong> o <strong>ADMIN</strong>.
+            Aquí puedes realizar consultas específicas sobre los usuarios del sistema.
+        </div>
+        
+        <div class="row">
+            <!-- Consulta 1: Por Rol -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-shield"></i> Consulta por Rol
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Busca usuarios por su rol específico (ADMIN, PROFESOR, ESTUDIANTE).
+                        </p>
+                        <form th:action="@{/consultas/por-rol}" method="get" class="row g-3">
+                            <div class="col-md-8">
+                                <select class="form-select" name="rol" required>
+                                    <option value="">Seleccione un rol...</option>
+                                    <option value="ADMIN">ADMIN</option>
+                                    <option value="PROFESOR">PROFESOR</option>
+                                    <option value="ESTUDIANTE">ESTUDIANTE</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-search"></i> Buscar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Consulta 2: Por Fecha -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-calendar"></i> Consulta por Rango de Fechas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Busca usuarios registrados en un rango específico de fechas.
+                        </p>
+                        <form th:action="@{/consultas/por-fecha}" method="get" class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small">Fecha Inicio</label>
+                                <input type="datetime-local" class="form-control" name="fechaInicio" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Fecha Fin</label>
+                                <input type="datetime-local" class="form-control" name="fechaFin" required>
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-success w-100 mt-2">
+                                    <i class="bi bi-search"></i> Buscar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Consulta 3: Búsqueda Parcial -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-warning text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-text-left"></i> Búsqueda Parcial
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Busca usuarios por coincidencia parcial en nombre, apellido o email.
+                        </p>
+                        <form th:action="@{/consultas/por-busqueda}" method="get" class="row g-3">
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" name="termino" 
+                                       placeholder="Ej: maria, @gmail.com, lopez" required>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-warning w-100">
+                                    <i class="bi bi-search"></i> Buscar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Consulta 4: Ordenados por Fecha -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-sort-down"></i> Ordenados por Fecha
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Muestra todos los usuarios ordenados por fecha de creación (más recientes primero).
+                        </p>
+                        <div class="d-grid">
+                            <a th:href="@{/consultas/ordenados-fecha}" class="btn btn-info">
+                                <i class="bi bi-arrow-down"></i> Ver Usuarios Ordenados
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Consulta 5: Estadísticas -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-graph-up"></i> Estadísticas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Muestra estadísticas generales del sistema (usuarios activos/inactivos, por rol, etc.)
+                        </p>
+                        <div class="d-grid">
+                            <a th:href="@{/consultas/estadisticas}" class="btn btn-dark">
+                                <i class="bi bi-bar-chart"></i> Ver Estadísticas
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Consulta 6: Activos vs Inactivos -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-toggle-on"></i> Activos vs Inactivos
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Compara usuarios activos e inactivos del sistema.
+                        </p>
+                        <div class="d-grid">
+                            <a th:href="@{/consultas/activos-inactivos}" class="btn btn-secondary">
+                                <i class="bi bi-people"></i> Comparar Estados
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Información de consultas -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-code-slash"></i> Consultas JPA Implementadas
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tipo de Consulta</th>
+                                <th>Método Repository</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><span class="badge bg-primary">Derived Query</span></td>
+                                <td><code>findByRolNombre()</code></td>
+                                <td>Buscar usuarios por nombre de rol</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><span class="badge bg-primary">Derived Query</span></td>
+                                <td><code>findByEmailContainingOrNombreContainingOrApellidoContaining()</code></td>
+                                <td>Búsqueda parcial en email, nombre o apellido</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><span class="badge bg-primary">Derived Query</span></td>
+                                <td><code>findByFechaCreacionBetween()</code></td>
+                                <td>Usuarios en rango de fechas</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><span class="badge bg-success">@Query</span></td>
+                                <td><code>countByActivo()</code></td>
+                                <td>Contar usuarios por estado</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><span class="badge bg-primary">Derived Query</span></td>
+                                <td><code>findAllByOrderByFechaCreacionDesc()</code></td>
+                                <td>Ordenados por fecha descendente</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td><span class="badge bg-success">@Query</span></td>
+                                <td><code>countUsersByRol()</code></td>
+                                <td>Estadísticas por rol</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td><span class="badge bg-primary">Derived Query</span></td>
+                                <td><code>findByActivo()</code></td>
+                                <td>Buscar por estado activo/inactivo</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td><span class="badge bg-success">@Query</span></td>
+                                <td><code>findByRolNombreAndActivo()</code></td>
+                                <td>Combinación rol + estado</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

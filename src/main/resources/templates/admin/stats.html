@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/base}">
+<head>
+    <title>Estadísticas</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2">
+                <i class="bi bi-graph-up"></i> Estadísticas del Sistema
+            </h1>
+            <div>
+                <span class="badge bg-info">
+                    <i class="bi bi-calendar"></i> 
+                    <span th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy')}"></span>
+                </span>
+            </div>
+        </div>
+        
+        <!-- Tarjetas de resumen -->
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title text-uppercase">Total Usuarios</h6>
+                                <h2 class="display-6" th:text="${stats.totalUsers}">0</h2>
+                            </div>
+                            <div>
+                                <i class="bi bi-people display-4 opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title text-uppercase">Usuarios Activos</h6>
+                                <h2 class="display-6" th:text="${stats.activeUsers}">0</h2>
+                            </div>
+                            <div>
+                                <i class="bi bi-check-circle display-4 opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title text-uppercase">Usuarios Inactivos</h6>
+                                <h2 class="display-6" th:text="${stats.inactiveUsers}">0</h2>
+                            </div>
+                            <div>
+                                <i class="bi bi-x-circle display-4 opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title text-uppercase">% Activos</h6>
+                                <h2 class="display-6" th:text="${#numbers.formatDecimal(stats.activePercentage, 1, 1)} + '%'">0%</h2>
+                            </div>
+                            <div>
+                                <i class="bi bi-percent display-4 opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gráficos y tablas -->
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-pie-chart"></i> Distribución por Rol
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Rol</th>
+                                        <th>Cantidad</th>
+                                        <th>Porcentaje</th>
+                                        <th>Proporción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="entry : ${stats.usersByRole}">
+                                        <td>
+                                            <span class="badge" 
+                                                  th:classappend="${entry.key == 'ADMIN'} ? 'bg-danger' : 
+                                                                 ${entry.key == 'PROFESOR'} ? 'bg-warning' : 'bg-info'">
+                                                <i class="bi bi-shield-check"></i>
+                                                <span th:text="${entry.key}"></span>
+                                            </span>
+                                        </td>
+                                        <td th:text="${entry.value}">0</td>
+                                        <td>
+                                            <span th:text="${#numbers.formatDecimal(entry.value * 100 / stats.totalUsers, 1, 1)} + '%'">
+                                                0%
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 20px;">
+                                                <div class="progress-bar" 
+                                                     th:classappend="${entry.key == 'ADMIN'} ? 'bg-danger' : 
+                                                                    ${entry.key == 'PROFESOR'} ? 'bg-warning' : 'bg-info'"
+                                                     th:style="'width: ' + ${entry.value} * 100 / ${stats.totalUsers} + '%;'"
+                                                     th:text="${#numbers.formatDecimal(entry.value * 100 / stats.totalUsers, 1, 1)} + '%'">
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-secondary">
+                                        <td><strong>Total</strong></td>
+                                        <td th:text="${stats.totalUsers}">0</td>
+                                        <td>100%</td>
+                                        <td>
+                                            <div class="progress" style="height: 20px;">
+                                                <div class="progress-bar bg-dark" style="width: 100%;">100%</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-bar-chart"></i> Activos vs Inactivos
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <h3 class="text-success" th:text="${stats.activeUsers}">0</h3>
+                                    <p class="text-muted">Activos</p>
+                                    <div class="progress" style="height: 30px;">
+                                        <div class="progress-bar bg-success" 
+                                             th:style="'width: ' + ${stats.activePercentage} + '%;'"
+                                             th:text="${#numbers.formatDecimal(stats.activePercentage, 1, 1)} + '%'">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <h3 class="text-warning" th:text="${stats.inactiveUsers}">0</h3>
+                                    <p class="text-muted">Inactivos</p>
+                                    <div class="progress" style="height: 30px;">
+                                        <div class="progress-bar bg-warning" 
+                                             th:style="'width: ' + ${stats.inactivePercentage} + '%;'"
+                                             th:text="${#numbers.formatDecimal(stats.inactivePercentage, 1, 1)} + '%'">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h6>Resumen de Actividad</h6>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Total de Usuarios Registrados
+                                    <span class="badge bg-primary rounded-pill" th:text="${stats.totalUsers}">0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Usuarios Activos
+                                    <span class="badge bg-success rounded-pill" th:text="${stats.activeUsers}">0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Usuarios Inactivos
+                                    <span class="badge bg-warning rounded-pill" th:text="${stats.inactiveUsers}">0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Tasa de Actividad
+                                    <span class="badge bg-info rounded-pill" 
+                                          th:text="${#numbers.formatDecimal(stats.activePercentage, 1, 1)} + '%'">
+                                        0%
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Información adicional -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-info-circle"></i> Información del Sistema
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-database display-4 text-primary mb-3"></i>
+                                        <h5>Base de Datos</h5>
+                                        <p class="text-muted">MySQL - Plataforma</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-shield-check display-4 text-success mb-3"></i>
+                                        <h5>Seguridad</h5>
+                                        <p class="text-muted">Spring Security</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-clock-history display-4 text-warning mb-3"></i>
+                                        <h5>Última Actualización</h5>
+                                        <p class="text-muted" th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}">
+                                            Hoy
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                console.log('Página de estadísticas cargada');
+                
+                // Actualizar la hora actual cada minuto
+                function updateCurrentTime() {
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString('es-ES', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+                    $('.current-time').text(timeString);
+                }
+                
+                setInterval(updateCurrentTime, 1000);
+                updateCurrentTime();
+            });
+        </script>
+    </div>
+</body>
+</html>

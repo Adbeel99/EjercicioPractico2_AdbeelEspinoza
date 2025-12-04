@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/base}">
+<head>
+    <title>Mi Perfil</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2">
+                <i class="bi bi-person"></i> Mi Perfil
+            </h1>
+            <a th:href="@{/estudiante/dashboard}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Volver al Dashboard
+            </a>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <!-- Tarjeta de perfil -->
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div class="avatar-circle mb-3">
+                            <i class="bi bi-person display-1 text-primary"></i>
+                        </div>
+                        <h4 th:text="${user.nombre} + ' ' + ${user.apellido}">Nombre Apellido</h4>
+                        <p class="text-muted" th:text="${user.email}">email@ejemplo.com</p>
+                        
+                        <div class="mt-3">
+                            <span class="badge bg-info" th:text="${user.rolNombre}">ESTUDIANTE</span>
+                            <span class="badge" 
+                                  th:classappend="${user.activo} ? 'bg-success' : 'bg-secondary'"
+                                  th:text="${user.activo} ? 'Activo' : 'Inactivo'">
+                                Activo
+                            </span>
+                        </div>
+                        
+                        <hr class="my-3">
+                        
+                        <div class="text-start">
+                            <p>
+                                <i class="bi bi-calendar text-primary me-2"></i>
+                                <strong>Fecha de Registro:</strong><br>
+                                <span th:text="${#temporals.format(user.fechaCreacion, 'dd/MM/yyyy HH:mm')}">
+                                    01/01/2024
+                                </span>
+                            </p>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-3">
+                            <a th:href="@{/estudiante/mis-datos}" class="btn btn-primary">
+                                <i class="bi bi-pencil"></i> Editar Perfil
+                            </a>
+                            <button class="btn btn-outline-secondary">
+                                <i class="bi bi-download"></i> Descargar Datos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Información de contacto -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <i class="bi bi-telephone"></i> Información de Contacto
+                        </h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="bi bi-envelope text-primary me-2"></i>
+                                <span th:text="${user.email}">email@ejemplo.com</span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-person text-success me-2"></i>
+                                <span th:text="${user.nombre} + ' ' + ${user.apellido}">Nombre</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <!-- Información detallada -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Información Personal</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <dl class="row">
+                                    <dt class="col-sm-4">Nombre:</dt>
+                                    <dd class="col-sm-8" th:text="${user.nombre}">-</dd>
+                                    
+                                    <dt class="col-sm-4">Apellido:</dt>
+                                    <dd class="col-sm-8" th:text="${user.apellido}">-</dd>
+                                    
+                                    <dt class="col-sm-4">Email:</dt>
+                                    <dd class="col-sm-8" th:text="${user.email}">-</dd>
+                                </dl>
+                            </div>
+                            <div class="col-md-6">
+                                <dl class="row">
+                                    <dt class="col-sm-4">Rol:</dt>
+                                    <dd class="col-sm-8">
+                                        <span class="badge bg-info" th:text="${user.rolNombre}">ESTUDIANTE</span>
+                                    </dd>
+                                    
+                                    <dt class="col-sm-4">Estado:</dt>
+                                    <dd class="col-sm-8">
+                                        <span class="badge" 
+                                              th:classappend="${user.activo} ? 'bg-success' : 'bg-secondary'"
+                                              th:text="${user.activo} ? 'Activo' : 'Inactivo'">
+                                            Activo
+                                        </span>
+                                    </dd>
+                                    
+                                    <dt class="col-sm-4">Fecha Registro:</dt>
+                                    <dd class="col-sm-8" th:text="${#temporals.format(user.fechaCreacion, 'dd/MM/yyyy HH:mm:ss')}">-</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Permisos y acceso -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-shield-check"></i> Permisos y Acceso
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Como estudiante, tienes acceso a las siguientes funcionalidades:</p>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card bg-light mb-3">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-success">
+                                            <i class="bi bi-check-circle"></i> Permitido
+                                        </h6>
+                                        <ul class="list-unstyled">
+                                            <li><i class="bi bi-check text-success me-2"></i>Ver perfil propio</li>
+                                            <li><i class="bi bi-check text-success me-2"></i>Editar datos personales</li>
+                                            <li><i class="bi bi-check text-success me-2"></i>Cambiar contraseña</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light mb-3">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-secondary">
+                                            <i class="bi bi-x-circle"></i> No Permitido
+                                        </h6>
+                                        <ul class="list-unstyled">
+                                            <li><i class="bi bi-x text-secondary me-2"></i>Gestionar otros usuarios</li>
+                                            <li><i class="bi bi-x text-secondary me-2"></i>Ver reportes del sistema</li>
+                                            <li><i class="bi bi-x text-secondary me-2"></i>Realizar consultas avanzadas</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actividad reciente -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clock-history"></i> Actividad Reciente
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-marker bg-primary"></div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">Inicio de sesión</h6>
+                                    <p class="text-muted small mb-0">Sesión iniciada correctamente</p>
+                                    <small class="text-muted">Hoy, 
+                                        <span th:text="${#temporals.format(#temporals.createNow(), 'HH:mm')}">
+                                            ahora
+                                        </span>
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-marker bg-success"></div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">Perfil visitado</h6>
+                                    <p class="text-muted small mb-0">Consulta de información personal</p>
+                                    <small class="text-muted">Ayer, 15:30</small>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-marker bg-info"></div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">Registro en el sistema</h6>
+                                    <p class="text-muted small mb-0">Cuenta creada exitosamente</p>
+                                    <small class="text-muted" 
+                                           th:text="${#temporals.format(user.fechaCreacion, 'dd/MM/yyyy HH:mm')}">
+                                        01/01/2024
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div layout:fragment="scripts">
+        <style>
+            .avatar-circle {
+                width: 120px;
+                height: 120px;
+                background-color: #e9ecef;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto;
+                border: 3px solid #dee2e6;
+            }
+            
+            .timeline {
+                position: relative;
+                padding-left: 30px;
+            }
+            
+            .timeline-item {
+                position: relative;
+                margin-bottom: 20px;
+            }
+            
+            .timeline-marker {
+                position: absolute;
+                left: -30px;
+                top: 0;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+            }
+            
+            .timeline-content {
+                padding-left: 10px;
+            }
+        </style>
+    </div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/base}">
+<head>
+    <title>Página no encontrada</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+                <div class="card border-warning">
+                    <div class="card-body">
+                        <i class="bi bi-exclamation-triangle display-1 text-warning mb-4"></i>
+                        <h1 class="card-title text-warning">Error 404</h1>
+                        <p class="card-text">
+                            La página que buscas no existe o ha sido movida.
+                        </p>
+                        <p class="text-muted">
+                            Verifica la URL o utiliza la navegación para encontrar lo que necesitas.
+                        </p>
+                        
+                        <div class="mt-4">
+                            <a th:href="@{/}" class="btn btn-primary me-2">
+                                <i class="bi bi-house"></i> Ir al Inicio
+                            </a>
+                            <a th:href="@{/dashboard}" class="btn btn-outline-secondary">
+                                <i class="bi bi-speedometer2"></i> Ir al Dashboard
+                            </a>
+                            <button onclick="history.back()" class="btn btn-outline-warning ms-2">
+                                <i class="bi bi-arrow-left"></i> Volver Atrás
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">¿Qué puedes hacer?</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="bi bi-check-circle text-success me-2"></i>Verificar la URL escrita</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>Usar el menú de navegación</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>Contactar al administrador</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>Reportar el problema</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

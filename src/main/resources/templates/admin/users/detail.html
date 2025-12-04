@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/base}">
+<head>
+    <title>Detalle Usuario</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2">
+                <i class="bi bi-person-badge"></i> Detalle de Usuario
+            </h1>
+            <a th:href="@{/admin/users}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Volver a la lista
+            </a>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Información del Usuario</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <dl class="row">
+                                    <dt class="col-sm-4">ID:</dt>
+                                    <dd class="col-sm-8" th:text="${user.id}">-</dd>
+                                    
+                                    <dt class="col-sm-4">Nombre:</dt>
+                                    <dd class="col-sm-8" th:text="${user.nombre}">-</dd>
+                                    
+                                    <dt class="col-sm-4">Apellido:</dt>
+                                    <dd class="col-sm-8" th:text="${user.apellido}">-</dd>
+                                    
+                                    <dt class="col-sm-4">Email:</dt>
+                                    <dd class="col-sm-8" th:text="${user.email}">-</dd>
+                                    
+                                    <dt class="col-sm-4">Estado:</dt>
+                                    <dd class="col-sm-8">
+                                        <span class="badge" 
+                                              th:classappend="${user.activo} ? 'bg-success' : 'bg-secondary'">
+                                            <i class="bi" 
+                                               th:classappend="${user.activo} ? 'bi-check-circle' : 'bi-x-circle'"></i>
+                                            <span th:text="${user.activo} ? 'Activo' : 'Inactivo'"></span>
+                                        </span>
+                                    </dd>
+                                </dl>
+                            </div>
+                            <div class="col-md-6">
+                                <dl class="row">
+                                    <dt class="col-sm-4">Rol:</dt>
+                                    <dd class="col-sm-8">
+                                        <span class="badge" 
+                                              th:classappend="${user.rolNombre == 'ADMIN'} ? 'bg-danger' : 
+                                                             ${user.rolNombre == 'PROFESOR'} ? 'bg-warning' : 'bg-info'">
+                                            <i class="bi bi-shield-check"></i>
+                                            <span th:text="${user.rolNombre}"></span>
+                                        </span>
+                                    </dd>
+                                    
+                                    <dt class="col-sm-4">Fecha Registro:</dt>
+                                    <dd class="col-sm-8">
+                                        <span th:text="${#temporals.format(user.fechaCreacion, 'dd/MM/yyyy HH:mm:ss')}">
+                                            -
+                                        </span>
+                                    </dd>
+                                    
+                                    <dt class="col-sm-4">ID Rol:</dt>
+                                    <dd class="col-sm-8" th:text="${user.rolId}">-</dd>
+                                    
+                                    <dt class="col-sm-4">Nombre Completo:</dt>
+                                    <dd class="col-sm-8" th:text="${user.nombre} + ' ' + ${user.apellido}">-</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Acciones -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Acciones Disponibles</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="btn-group" role="group">
+                            <a th:href="@{/admin/users/edit/{id}(id=${user.id})}" 
+                               class="btn btn-primary">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            
+                            <button type="button" class="btn" 
+                                    th:classappend="${user.activo} ? 'btn-warning' : 'btn-success'"
+                                    data-bs-toggle="modal" 
+                                    th:attr="data-bs-target=${user.activo} ? '#deactivateModal' : '#activateModal'"
+                                    th:data-id="${user.id}"
+                                    th:data-name="${user.nombre + ' ' + user.apellido}">
+                                <i class="bi" 
+                                   th:classappend="${user.activo} ? 'bi-person-x' : 'bi-person-check'"></i>
+                                <span th:text="${user.activo} ? 'Desactivar' : 'Activar'"></span>
+                            </button>
+                            
+                            <button type="button" class="btn btn-danger" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#deleteModal"
+                                    th:data-id="${user.id}"
+                                    th:data-name="${user.nombre + ' ' + user.apellido}">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clock-history"></i> Actividad Reciente
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item">
+                                <small class="text-muted">Hoy</small>
+                                <p class="mb-1">Usuario visto por última vez</p>
+                            </div>
+                            <div class="list-group-item">
+                                <small class="text-muted" th:text="${#temporals.format(user.fechaCreacion, 'dd/MM/yyyy')}">
+                                    Fecha registro
+                                </small>
+                                <p class="mb-1">Cuenta creada en el sistema</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <i class="bi bi-shield-check"></i> Permisos del Rol
+                        </h6>
+                        <div th:switch="${user.rolNombre}">
+                            <div th:case="'ADMIN'">
+                                <ul class="list-unstyled">
+                                    <li><i class="bi bi-check-circle text-success"></i> Gestión completa de usuarios</li>
+                                    <li><i class="bi bi-check-circle text-success"></i> Gestión de roles</li>
+                                    <li><i class="bi bi-check-circle text-success"></i> Acceso a reportes</li>
+                                    <li><i class="bi bi-check-circle text-success"></i> Consultas avanzadas</li>
+                                </ul>
+                            </div>
+                            <div th:case="'PROFESOR'">
+                                <ul class="list-unstyled">
+                                    <li><i class="bi bi-check-circle text-success"></i> Ver reportes</li>
+                                    <li><i class="bi bi-check-circle text-success"></i> Consultas avanzadas</li>
+                                    <li><i class="bi bi-x-circle text-secondary"></i> Gestión de usuarios</li>
+                                    <li><i class="bi bi-x-circle text-secondary"></i> Gestión de roles</li>
+                                </ul>
+                            </div>
+                            <div th:case="'ESTUDIANTE'">
+                                <ul class="list-unstyled">
+                                    <li><i class="bi bi-check-circle text-success"></i> Ver perfil propio</li>
+                                    <li><i class="bi bi-x-circle text-secondary"></i> Ver reportes</li>
+                                    <li><i class="bi bi-x-circle text-secondary"></i> Consultas avanzadas</li>
+                                    <li><i class="bi bi-x-circle text-secondary"></i> Gestión de usuarios</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modals -->
+    <div th:replace="fragments/modals :: delete-modal"></div>
+    <div th:replace="fragments/modals :: deactivate-modal"></div>
+    <div th:replace="fragments/modals :: activate-modal"></div>
+    
+    <div layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                // Configurar modales
+                $('#deleteModal').on('show.bs.modal', function(event) {
+                    var button = $(event.relatedTarget);
+                    var userId = button.data('id');
+                    var userName = button.data('name');
+                    var modal = $(this);
+                    modal.find('.modal-body').text('¿Estás seguro de eliminar al usuario "' + userName + '"?');
+                    modal.find('#deleteForm').attr('action', '/admin/users/delete/' + userId);
+                });
+                
+                $('#deactivateModal').on('show.bs.modal', function(event) {
+                    var button = $(event.relatedTarget);
+                    var userId = button.data('id');
+                    var userName = button.data('name');
+                    var modal = $(this);
+                    modal.find('.modal-body').text('¿Estás seguro de desactivar al usuario "' + userName + '"?');
+                    modal.find('#deactivateForm').attr('action', '/admin/users/toggle-status/' + userId + '?activate=false');
+                });
+                
+                $('#activateModal').on('show.bs.modal', function(event) {
+                    var button = $(event.relatedTarget);
+                    var userId = button.data('id');
+                    var userName = button.data('name');
+                    var modal = $(this);
+                    modal.find('.modal-body').text('¿Estás seguro de activar al usuario "' + userName + '"?');
+                    modal.find('#activateForm').attr('action', '/admin/users/toggle-status/' + userId + '?activate=true');
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>

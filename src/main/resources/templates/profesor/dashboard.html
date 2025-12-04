@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/base}">
+<head>
+    <title>Dashboard Profesor</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2">
+                <i class="bi bi-person-badge"></i> Panel del Profesor
+            </h1>
+            <div>
+                <span class="badge bg-warning">
+                    <i class="bi bi-shield-check"></i> PROFESOR
+                </span>
+            </div>
+        </div>
+        
+        <!-- Bienvenida -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4 class="card-title">¡Bienvenido, Profesor!</h4>
+                        <p class="card-text">
+                            Desde este panel puedes acceder a los reportes del sistema, 
+                            realizar consultas avanzadas y ver información de estudiantes.
+                        </p>
+                        <div class="mt-3">
+                            <span class="badge bg-light text-dark me-2">
+                                <i class="bi bi-calendar"></i>
+                                <span th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy')}"></span>
+                            </span>
+                            <span class="badge bg-light text-dark">
+                                <i class="bi bi-clock"></i>
+                                <span class="current-time"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <i class="bi bi-person-badge display-1 text-warning"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Acciones rápidas -->
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-file-text display-4 text-primary mb-3"></i>
+                        <h5 class="card-title">Reportes</h5>
+                        <p class="card-text">
+                            Accede a reportes detallados del sistema y estadísticas de usuarios.
+                        </p>
+                        <a th:href="@{/profesor/reportes}" class="btn btn-primary w-100">
+                            <i class="bi bi-graph-up"></i> Ver Reportes
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-search display-4 text-success mb-3"></i>
+                        <h5 class="card-title">Consultas Avanzadas</h5>
+                        <p class="card-text">
+                            Realiza búsquedas específicas y consultas personalizadas sobre los usuarios.
+                        </p>
+                        <a th:href="@{/consultas/avanzadas}" class="btn btn-success w-100">
+                            <i class="bi bi-search"></i> Realizar Consultas
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-mortarboard display-4 text-info mb-3"></i>
+                        <h5 class="card-title">Estudiantes</h5>
+                        <p class="card-text">
+                            Visualiza la lista de estudiantes registrados en el sistema.
+                        </p>
+                        <a th:href="@{/profesor/estudiantes}" class="btn btn-info w-100">
+                            <i class="bi bi-people"></i> Ver Estudiantes
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Información del sistema -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-info-circle"></i> Información del Sistema
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Rol Actual
+                                <span class="badge bg-warning">PROFESOR</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Permisos Disponibles
+                                <span class="badge bg-success">Reportes + Consultas</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Acceso Restringido
+                                <span class="badge bg-secondary">Gestión de Usuarios</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-lightning-charge"></i> Acciones Rápidas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            <a th:href="@{/profesor/reportes}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-graph-up"></i> Generar Reporte Diario
+                            </a>
+                            <a th:href="@{/consultas/avanzadas}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-search"></i> Buscar Usuario por Email
+                            </a>
+                            <a th:href="@{/profesor/estudiantes}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-people"></i> Listar Estudiantes Activos
+                            </a>
+                            <a th:href="@{/estudiante/perfil}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-person"></i> Ver Mi Perfil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                // Actualizar la hora actual cada minuto
+                function updateCurrentTime() {
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString('es-ES', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    $('.current-time').text(timeString);
+                }
+                
+                setInterval(updateCurrentTime, 60000); // Cada minuto
+                updateCurrentTime();
+            });
+        </script>
+    </div>
+</body>
+</html>
