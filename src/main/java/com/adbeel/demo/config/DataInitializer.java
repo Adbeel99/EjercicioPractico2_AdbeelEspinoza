@@ -9,24 +9,25 @@ package com.adbeel.demo.config;
  *
  * @author Laboratorio
  */
-import com.adbeel.demo.domain.Role;
-import com.adbeel.demo.domain.User;
-import com.adbeel.demo.repository.RoleRepository;
-import com.adbeel.demo.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Arrays;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Arrays;
-import java.util.List;
+import com.adbeel.demo.domain.Role;
+import com.adbeel.demo.domain.User;
+import com.adbeel.demo.repository.RoleRepository;
+import com.adbeel.demo.repository.UserRepository;
 
 @Configuration
-@RequiredArgsConstructor
-@Slf4j
 public class DataInitializer {
+
+    private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
     
     @Bean
     CommandLineRunner initDatabase(RoleRepository roleRepository, 
@@ -39,9 +40,9 @@ public class DataInitializer {
             List<String> roleNames = Arrays.asList("ADMIN", "PROFESOR", "ESTUDIANTE");
             
             for (String roleName : roleNames) {
-                if (roleRepository.findByName(roleName).isEmpty()) {
+                if (roleRepository.findByNombre(roleName).isEmpty()) {
                     Role role = new Role();
-                    role.setName(roleName);
+                    role.setNombre(roleName);
                     roleRepository.save(role);
                     log.info("Rol creado: {}", roleName);
                 }
@@ -49,11 +50,12 @@ public class DataInitializer {
             
             // Crear usuario admin si no existe
             if (userRepository.findByEmail("admin@adbeel.com").isEmpty()) {
-                Role adminRole = roleRepository.findByName("ADMIN")
+                Role adminRole = roleRepository.findByNombre("ADMIN")
                     .orElseThrow(() -> new RuntimeException("Rol ADMIN no encontrado"));
                 
                 User admin = new User();
                 admin.setName("Administrador Principal");
+                admin.setApellido("Admin");
                 admin.setEmail("admin@adbeel.com");
                 admin.setPassword(passwordEncoder.encode("admin123"));
                 admin.setActive(true);
@@ -65,11 +67,12 @@ public class DataInitializer {
             
             // Crear usuario profesor de ejemplo
             if (userRepository.findByEmail("profesor@adbeel.com").isEmpty()) {
-                Role profesorRole = roleRepository.findByName("PROFESOR")
+                Role profesorRole = roleRepository.findByNombre("PROFESOR")
                     .orElseThrow(() -> new RuntimeException("Rol PROFESOR no encontrado"));
                 
                 User profesor = new User();
                 profesor.setName("Profesor Ejemplo");
+                profesor.setApellido("Profesor");
                 profesor.setEmail("profesor@adbeel.com");
                 profesor.setPassword(passwordEncoder.encode("profesor123"));
                 profesor.setActive(true);
@@ -81,11 +84,12 @@ public class DataInitializer {
             
             // Crear usuario estudiante de ejemplo
             if (userRepository.findByEmail("estudiante@adbeel.com").isEmpty()) {
-                Role estudianteRole = roleRepository.findByName("ESTUDIANTE")
+                Role estudianteRole = roleRepository.findByNombre("ESTUDIANTE")
                     .orElseThrow(() -> new RuntimeException("Rol ESTUDIANTE no encontrado"));
                 
                 User estudiante = new User();
                 estudiante.setName("Estudiante Ejemplo");
+                estudiante.setApellido("Estudiante");
                 estudiante.setEmail("estudiante@adbeel.com");
                 estudiante.setPassword(passwordEncoder.encode("estudiante123"));
                 estudiante.setActive(true);

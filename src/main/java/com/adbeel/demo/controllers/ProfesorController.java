@@ -9,27 +9,24 @@ package com.adbeel.demo.controllers;
  *
  * @author Laboratorio
  */
-import com.adbeel.demo.config.SecurityUtils;
-import com.adbeel.demo.service.AdvancedQueriesService;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
+import com.adbeel.demo.service.AdvancedQueriesService;
 
 @Controller
 @RequestMapping("/profesor")
-@RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('PROFESOR', 'ADMIN')")
 public class ProfesorController {
     
-    private final AdvancedQueriesService advancedQueriesService;
-    private final SecurityUtils securityUtils;
+    @Autowired
+    private AdvancedQueriesService advancedQueriesService;
     
     @GetMapping("/dashboard")
     public String profesorDashboard(Model model) {

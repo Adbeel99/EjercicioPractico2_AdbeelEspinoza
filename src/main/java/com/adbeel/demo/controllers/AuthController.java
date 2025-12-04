@@ -9,11 +9,7 @@ package com.adbeel.demo.controllers;
  *
  * @author Laboratorio
  */
-import com.adbeel.demo.service.dto.UserDTO;
-import com.adbeel.demo.service.UserService;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,12 +19,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.adbeel.demo.service.UserService;
+import com.adbeel.demo.service.dto.UserDTO;
+
+import jakarta.validation.Valid;
+
 @Controller
-@RequiredArgsConstructor
-@Slf4j
 public class AuthController {
     
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
     
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,

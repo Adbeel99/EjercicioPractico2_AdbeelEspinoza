@@ -9,17 +9,18 @@ package com.adbeel.demo.controllers;
  *
  * @author Laboratorio
  */
-import com.adbeel.demo.config.SecurityUtils;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.adbeel.demo.config.SecurityUtils;
+
 @Controller
-@RequiredArgsConstructor
 public class HomeController {
     
-    private final SecurityUtils securityUtils;
+    @Autowired
+    private SecurityUtils securityUtils;
     
     @GetMapping("/")
     public String home(Model model) {

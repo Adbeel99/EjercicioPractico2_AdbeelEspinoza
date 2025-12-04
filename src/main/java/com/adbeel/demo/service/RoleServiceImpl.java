@@ -9,26 +9,27 @@ package com.adbeel.demo.service;
  *
  * @author Laboratorio
  */
-import com.adbeel.demo.domain.Role;
-import com.adbeel.demo.domain.User;
-import com.adbeel.demo.repository.RoleRepository;
-import com.adbeel.demo.repository.UserRepository;
-import com.adbeel.demo.service.RoleService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.adbeel.demo.domain.Role;
+import com.adbeel.demo.domain.User;
+import com.adbeel.demo.repository.RoleRepository;
+import com.adbeel.demo.repository.UserRepository;
+
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class RoleServiceImpl implements RoleService {
     
-    private final RoleRepository roleRepository;
-    private final UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private UserRepository userRepository;
     
     @Override
     public List<Role> findAll() {
@@ -43,8 +44,8 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role save(Role role) {
         // Validar que el nombre no exista (excepto en actualización)
-        if (role.getId() == null && roleRepository.existsByName(role.getName())) {
-            throw new IllegalArgumentException("Ya existe un rol con el nombre: " + role.getName());
+        if (role.getId() == null && roleRepository.existsByNombre(role.getNombre())) {
+            throw new IllegalArgumentException("Ya existe un rol con el nombre: " + role.getNombre());
         }
         return roleRepository.save(role);
     }
@@ -59,20 +60,20 @@ public class RoleServiceImpl implements RoleService {
     
     @Override
     public Optional<Role> findByName(String name) {
-        return roleRepository.findByName(name);
+        return roleRepository.findByNombre(name);
     }
     
     @Override
     public boolean existsByName(String name) {
-        return roleRepository.existsByName(name);
+        return roleRepository.existsByNombre(name);
     }
     
     @Override
     public boolean canDeleteRole(Long roleId) {
         // Verificar si hay usuarios con este rol
-        List<User> usersWithRole = userRepository.findByRoleName(
+        List<User> usersWithRole = userRepository.findByRolNombre(
             roleRepository.findById(roleId)
-                .map(Role::getName)
+                .map(Role::getNombre)
                 .orElse("")
         );
         return usersWithRole.isEmpty();
@@ -81,7 +82,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<Role> findAllSortedByName() {
         return roleRepository.findAll().stream()
-            .sorted((r1, r2) -> r1.getName().compareToIgnoreCase(r2.getName()))
+            .sorted((r1, r2) -> r1.getNombre().compareToIgnoreCase(r2.getNombre()))
             .toList();
     }
     
@@ -90,14 +91,14 @@ public class RoleServiceImpl implements RoleService {
         List<String> defaultRoles = Arrays.asList("ADMIN", "PROFESOR", "ESTUDIANTE");
         
         for (String roleName : defaultRoles) {
-            if (!roleRepository.existsByName(roleName)) {
+            if (!roleRepository.existsByNombre(roleName)) {
                 Role role = new Role();
-                role.setName(roleName);
+                role.setNombre(roleName);
                 roleRepository.save(role);
             }
         }
-        
-        return roleRepository.findByName("ADMIN")
+
+        return roleRepository.findByNombre("ADMIN")
             .orElseThrow(() -> new RuntimeException("Error creando roles por defecto"));
     }
 }

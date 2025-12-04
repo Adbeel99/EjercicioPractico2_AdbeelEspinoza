@@ -9,18 +9,17 @@ package com.adbeel.demo.service;
  *
  * @author Laboratorio
  */
-import com.adbeel.demo.service.dto.UserDTO;
-import com.adbeel.demo.service.dto.UserResponseDTO;
-import com.adbeel.demo.domain.User;
-import com.adbeel.demo.service.dto.UserDTO;
-import com.adbeel.demo.service.dto.UserResponseDTO;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.adbeel.demo.domain.User;
+import com.adbeel.demo.service.dto.UserDTO;
+import com.adbeel.demo.service.dto.UserResponseDTO;
 
 public interface UserService {
     

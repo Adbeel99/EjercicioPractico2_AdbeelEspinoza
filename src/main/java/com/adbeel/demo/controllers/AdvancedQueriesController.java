@@ -9,8 +9,10 @@ package com.adbeel.demo.controllers;
  *
  * @author Laboratorio
  */
-import com.adbeel.demo.service.AdvancedQueriesService;
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -19,16 +21,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.adbeel.demo.service.AdvancedQueriesService;
 
 @Controller
 @RequestMapping("/consultas")
-@RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('PROFESOR', 'ADMIN')")
 public class AdvancedQueriesController {
     
-    private final AdvancedQueriesService advancedQueriesService;
+    @Autowired
+    private AdvancedQueriesService advancedQueriesService;
     
     @GetMapping("/avanzadas")
     public String showAdvancedQueriesPage(Model model) {

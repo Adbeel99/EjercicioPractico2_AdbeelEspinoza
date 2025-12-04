@@ -9,21 +9,22 @@ package com.adbeel.demo.repository;
  *
  * @author Laboratorio
  */
-import com.adbeel.demo.domain.Role;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import com.adbeel.demo.domain.Role;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
     
-    // Buscar rol por nombre
-    Optional<Role> findByName(String name);
-    
+    // Buscar rol por nombre (propiedad en español)
+    Optional<Role> findByNombre(String nombre);
+
     // Verificar si existe un rol por nombre
-    boolean existsByName(String name);
-    
+    boolean existsByNombre(String nombre);
+
     // Eliminar rol por nombre
-    void deleteByName(String name);
+    void deleteByNombre(String nombre);
 }

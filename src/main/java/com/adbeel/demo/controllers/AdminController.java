@@ -9,27 +9,27 @@ package com.adbeel.demo.controllers;
  *
  * @author Laboratorio
  */
-import com.adbeel.demo.config.SecurityUtils;
-import com.adbeel.demo.service.AdvancedQueriesService;
-import com.adbeel.demo.service.UserService;
-import lombok.RequiredArgsConstructor;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Map;
+import com.adbeel.demo.service.AdvancedQueriesService;
+import com.adbeel.demo.service.UserService;
 
 @Controller
 @RequestMapping("/admin")
-@RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
     
-    private final UserService userService;
-    private final AdvancedQueriesService advancedQueriesService;
-    private final SecurityUtils securityUtils;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private AdvancedQueriesService advancedQueriesService;
     
     @GetMapping("/dashboard")
     public String adminDashboard(Model model) {

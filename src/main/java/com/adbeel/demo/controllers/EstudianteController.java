@@ -9,26 +9,28 @@ package com.adbeel.demo.controllers;
  *
  * @author Laboratorio
  */
-import com.adbeel.demo.config.SecurityUtils;
-import com.adbeel.demo.domain.User;
-import com.adbeel.demo.service.UserService;
-import lombok.RequiredArgsConstructor;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Optional;
+import com.adbeel.demo.config.SecurityUtils;
+import com.adbeel.demo.domain.User;
+import com.adbeel.demo.service.UserService;
 
 @Controller
 @RequestMapping("/estudiante")
-@RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('ESTUDIANTE', 'PROFESOR', 'ADMIN')")
 public class EstudianteController {
     
-    private final UserService userService;
-    private final SecurityUtils securityUtils;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private SecurityUtils securityUtils;
     
     @GetMapping("/dashboard")
     public String estudianteDashboard(Model model) {

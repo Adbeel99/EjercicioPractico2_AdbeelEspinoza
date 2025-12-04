@@ -29,10 +29,10 @@ public class SecurityUtils {
         }
         
         Object principal = authentication.getPrincipal();
-        if (principal instanceof UserDetails) {
-            return Optional.of(((UserDetails) principal).getUsername());
-        } else if (principal instanceof String) {
-            return Optional.of((String) principal);
+        if (principal instanceof UserDetails userDetails) {
+            return Optional.of(userDetails.getUsername());
+        } else if (principal instanceof String str) {
+            return Optional.of(str);
         }
         
         return Optional.empty();

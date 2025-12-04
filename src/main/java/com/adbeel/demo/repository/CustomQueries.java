@@ -9,14 +9,16 @@ package com.adbeel.demo.repository;
  *
  * @author Laboratorio
  */
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
 import com.adbeel.demo.domain.User;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import org.springframework.stereotype.Repository;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Repository
 public class CustomQueries {
@@ -32,7 +34,7 @@ public class CustomQueries {
         StringBuilder jpql = new StringBuilder("SELECT u FROM User u WHERE 1=1");
         
         if (name != null && !name.isEmpty()) {
-            jpql.append(" AND LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%'))");
+            jpql.append(" AND LOWER(u.nombre) LIKE LOWER(CONCAT('%', :name, '%'))");
         }
         
         if (email != null && !email.isEmpty()) {
@@ -40,22 +42,22 @@ public class CustomQueries {
         }
         
         if (roleName != null && !roleName.isEmpty()) {
-            jpql.append(" AND u.role.name = :roleName");
+            jpql.append(" AND u.rol.nombre = :roleName");
         }
         
         if (startDate != null) {
-            jpql.append(" AND u.createdAt >= :startDate");
+            jpql.append(" AND u.fechaCreacion >= :startDate");
         }
         
         if (endDate != null) {
-            jpql.append(" AND u.createdAt <= :endDate");
+            jpql.append(" AND u.fechaCreacion <= :endDate");
         }
         
         if (active != null) {
-            jpql.append(" AND u.active = :active");
+            jpql.append(" AND u.activo = :active");
         }
         
-        jpql.append(" ORDER BY u.createdAt DESC");
+        jpql.append(" ORDER BY u.fechaCreacion DESC");
         
         TypedQuery<User> query = entityManager.createQuery(jpql.toString(), User.class);
         
@@ -91,10 +93,10 @@ public class CustomQueries {
         String jpql = """
             SELECT 
                 COUNT(u) as totalUsers,
-                SUM(CASE WHEN u.active = true THEN 1 ELSE 0 END) as activeUsers,
-                SUM(CASE WHEN u.active = false THEN 1 ELSE 0 END) as inactiveUsers,
-                MIN(u.createdAt) as firstRegistration,
-                MAX(u.createdAt) as lastRegistration
+                SUM(CASE WHEN u.activo = true THEN 1 ELSE 0 END) as activeUsers,
+                SUM(CASE WHEN u.activo = false THEN 1 ELSE 0 END) as inactiveUsers,
+                MIN(u.fechaCreacion) as firstRegistration,
+                MAX(u.fechaCreacion) as lastRegistration
             FROM User u
             """;
         

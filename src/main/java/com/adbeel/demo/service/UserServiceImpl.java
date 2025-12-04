@@ -9,15 +9,13 @@ package com.adbeel.demo.service;
  *
  * @author Laboratorio
  */
-import com.adbeel.demo.domain.Role;
-import com.adbeel.demo.domain.User;
-import com.adbeel.demo.repository.RoleRepository;
-import com.adbeel.demo.repository.UserRepository;
-import com.adbeel.demo.service.RoleService;
-import com.adbeel.demo.service.UserService;
-import com.adbeel.demo.service.dto.UserDTO;
-import com.adbeel.demo.service.dto.UserResponseDTO;
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -25,21 +23,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.adbeel.demo.domain.Role;
+import com.adbeel.demo.domain.User;
+import com.adbeel.demo.repository.RoleRepository;
+import com.adbeel.demo.repository.UserRepository;
+import com.adbeel.demo.service.dto.UserDTO;
+import com.adbeel.demo.service.dto.UserResponseDTO;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class UserServiceImpl implements UserService {
     
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final RoleService roleService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
     
     @Override
     public List<User> findAll() {
@@ -53,13 +54,13 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public User save(User user) {
-        if (user.getId() == null && userRepository.existsByEmail(user.getEmail())) {
+        if (user.getId() == null && userRepository.existsByEmail((String) user.getEmail())) {
             throw new IllegalArgumentException("Ya existe un usuario con el email: " + user.getEmail());
         }
         
         // Si es un usuario nuevo, encriptar la contraseña
         if (user.getId() == null && user.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setPassword(passwordEncoder.encode((CharSequence) user.getPassword()));
         }
         
         return userRepository.save(user);
@@ -90,22 +91,22 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public List<User> findByRoleName(String roleName) {
-        return userRepository.findByRoleName(roleName);
+        return userRepository.findByRolNombre(roleName);
     }
     
     @Override
     public List<User> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end) {
-        return userRepository.findByCreatedAtBetween(start, end);
+        return userRepository.findByFechaCreacionBetween(start, end);
     }
     
     @Override
     public List<User> findByEmailContainingOrNameContaining(String email, String name) {
-        return userRepository.findByEmailContainingOrNameContaining(email, name);
+        return userRepository.findByEmailContainingOrNombreContaining(email, name);
     }
     
     @Override
     public List<User> findAllByOrderByCreatedAtDesc() {
-        return userRepository.findAllByOrderByCreatedAtDesc();
+        return userRepository.findAllByOrderByFechaCreacionDesc();
     }
     
     @Override
@@ -152,7 +153,7 @@ public class UserServiceImpl implements UserService {
         
         // Actualizar contraseña solo si se proporciona una nueva
         if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
-            existingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            existingUser.setPassword(passwordEncoder.encode((CharSequence) userDTO.getPassword()));
         }
         
         // Actualizar rol si es necesario
@@ -215,15 +216,15 @@ public class UserServiceImpl implements UserService {
     public List<User> searchUsers(String keyword, String role, Boolean active) {
         // Implementación simplificada de búsqueda
         if (keyword != null && !keyword.trim().isEmpty()) {
-            return userRepository.findByEmailContainingOrNameContaining(keyword, keyword);
+            return userRepository.findByEmailContainingOrNombreContaining(keyword, keyword);
         }
         
         if (role != null && !role.trim().isEmpty()) {
-            return userRepository.findByRoleName(role);
+            return userRepository.findByRolNombre(role);
         }
         
         if (active != null) {
-            return userRepository.findByActive(active);
+            return userRepository.findByActivo(active);
         }
         
         return userRepository.findAll();
@@ -239,7 +240,7 @@ public class UserServiceImpl implements UserService {
         
         // Encriptar contraseña
         if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            user.setPassword(passwordEncoder.encode((CharSequence) userDTO.getPassword()));
         }
         
         user.setActive(userDTO.isActive());

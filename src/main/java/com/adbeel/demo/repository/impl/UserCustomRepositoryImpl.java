@@ -9,23 +9,25 @@ package com.adbeel.demo.repository.impl;
  *
  * @author Laboratorio
  */
-import com.adbeel.demo.repository.UserCustomRepository;
-import com.adbeel.demo.domain.User;
-import com.adbeel.demo.repository.UserCustomRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.adbeel.demo.domain.User;
+import com.adbeel.demo.repository.UserCustomRepository;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @Repository
 public class UserCustomRepositoryImpl implements UserCustomRepository {
     
     @PersistenceContext
+    @SuppressWarnings("unused")
     private EntityManager entityManager;
     
     @Override

@@ -9,41 +9,41 @@ package com.adbeel.demo.service;
  *
  * @author Laboratorio
  */
-import com.adbeel.demo.domain.User;
-import com.adbeel.demo.repository.UserRepository;
-import com.adbeel.demo.service.AdvancedQueriesService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.adbeel.demo.domain.User;
+import com.adbeel.demo.repository.UserRepository;
+
 @Service
-@RequiredArgsConstructor
 public class AdvancedQueriesServiceImpl implements AdvancedQueriesService {
     
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
     
     @Override
     public List<User> getUsersByRole(String roleName) {
-        return userRepository.findByRoleName(roleName);
+        return userRepository.findByRolNombre(roleName);
     }
     
     @Override
     public List<User> getUsersByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
-        return userRepository.findByCreatedAtBetween(startDate, endDate);
+        return userRepository.findByFechaCreacionBetween(startDate, endDate);
     }
     
     @Override
     public List<User> getUsersByPartialMatch(String searchTerm) {
-        return userRepository.findByEmailContainingOrNameContaining(searchTerm, searchTerm);
+        return userRepository.findByEmailContainingOrNombreContaining(searchTerm, searchTerm);
     }
     
     @Override
     public List<User> getUsersOrderedByCreationDate() {
-        return userRepository.findAllByOrderByCreatedAtDesc();
+        return userRepository.findAllByOrderByFechaCreacionDesc();
     }
     
     @Override
@@ -83,11 +83,11 @@ public class AdvancedQueriesServiceImpl implements AdvancedQueriesService {
     
     @Override
     public List<User> getActiveUsers() {
-        return userRepository.findByActive(true);
+        return userRepository.findByActivo(true);
     }
     
     @Override
     public List<User> getInactiveUsers() {
-        return userRepository.findByActive(false);
+        return userRepository.findByActivo(false);
     }
 }
