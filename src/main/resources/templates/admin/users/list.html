@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/base}">
+<head>
+    <title>Usuarios</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2">
+                <i class="bi bi-people"></i> Gestión de Usuarios
+            </h1>
+            <a th:href="@{/admin/users/create}" class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> Nuevo Usuario
+            </a>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form th:action="@{/admin/users}" method="get" class="row g-3">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" class="form-control" name="search" 
+                                   th:value="${search}" placeholder="Buscar por nombre o email...">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-grid gap-2 d-md-flex">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-search"></i> Buscar
+                            </button>
+                            <a th:href="@{/admin/users}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Limpiar
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Users Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-list-ul"></i> Lista de Usuarios
+                    <span class="badge bg-secondary" th:text="${totalItems}">0</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                                <th>Fecha Registro</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user : ${usersPage.content}">
+                                <td th:text="${user.id}">1</td>
+                                <td th:text="${user.name}">Nombre</td>
+                                <td th:text="${user.email}">email@ejemplo.com</td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${user.roleName == 'ADMIN'} ? 'bg-danger' : 
+                                                         ${user.roleName == 'PROFESOR'} ? 'bg-warning' : 'bg-info'">
+                                        <i class="bi bi-shield-check"></i>
+                                        <span th:text="${user.roleName}"></span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${user.active} ? 'bg-success' : 'bg-secondary'">
+                                        <i class="bi" 
+                                           th:classappend="${user.active} ? 'bi-check-circle' : 'bi-x-circle'"></i>
+                                        <span th:text="${user.active} ? 'Activo' : 'Inactivo'"></span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <small th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                        01/01/2024
+                                    </small>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a th:href="@{/admin/users/detail/{id}(id=${user.id})}" 
+                                           class="btn btn-outline-info" title="Ver">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a th:href="@{/admin/users/edit/{id}(id=${user.id})}" 
+                                           class="btn btn-outline-primary" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-outline-danger" 
+                                                th:if="${user.active}"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#deactivateModal"
+                                                th:data-id="${user.id}"
+                                                th:data-name="${user.name}"
+                                                title="Desactivar">
+                                            <i class="bi bi-person-x"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-success" 
+                                                th:unless="${user.active}"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#activateModal"
+                                                th:data-id="${user.id}"
+                                                th:data-name="${user.name}"
+                                                title="Activar">
+                                            <i class="bi bi-person-check"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#deleteModal"
+                                                th:data-id="${user.id}"
+                                                th:data-name="${user.name}"
+                                                title="Eliminar">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${usersPage.empty}">
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    <i class="bi bi-people display-4 d-block mb-2"></i>
+                                    No se encontraron usuarios
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div th:if="${totalPages > 1}" class="d-flex justify-content-center mt-4">
+                    <nav>
+                        <ul class="pagination">
+                            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                <a class="page-link" th:href="@{/admin/users(page=0, size=${usersPage.size}, search=${search})}">
+                                    <i class="bi bi-chevron-double-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                <a class="page-link" 
+                                   th:href="@{/admin/users(page=${currentPage - 1}, size=${usersPage.size}, search=${search})}">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
+                            
+                            <li th:each="page : ${#numbers.sequence(0, totalPages-1)}" 
+                                class="page-item" th:classappend="${page == currentPage} ? 'active'">
+                                <a class="page-link" 
+                                   th:href="@{/admin/users(page=${page}, size=${usersPage.size}, search=${search})}"
+                                   th:text="${page + 1}">1</a>
+                            </li>
+                            
+                            <li class="page-item" th:classappend="${currentPage == totalPages-1} ? 'disabled'">
+                                <a class="page-link" 
+                                   th:href="@{/admin/users(page=${currentPage + 1}, size=${usersPage.size}, search=${search})}">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${currentPage == totalPages-1} ? 'disabled'">
+                                <a class="page-link" 
+                                   th:href="@{/admin/users(page=${totalPages-1}, size=${usersPage.size}, search=${search})}">
+                                    <i class="bi bi-chevron-double-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modals -->
+    <div th:replace="fragments/modals :: delete-modal"></div>
+    <div th:replace="fragments/modals :: deactivate-modal"></div>
+    <div th:replace="fragments/modals :: activate-modal"></div>
+    
+    <div layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                // Activar DataTables
+                $('table').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+                    }
+                });
+                
+                // Configurar modales
+                $('#deleteModal').on('show.bs.modal', function(event) {
+                    var button = $(event.relatedTarget);
+                    var userId = button.data('id');
+                    var userName = button.data('name');
+                    var modal = $(this);
+                    modal.find('.modal-body').text('¿Estás seguro de eliminar al usuario "' + userName + '"?');
+                    modal.find('#deleteForm').attr('action', '/admin/users/delete/' + userId);
+                });
+                
+                $('#deactivateModal').on('show.bs.modal', function(event) {
+                    var button = $(event.relatedTarget);
+                    var userId = button.data('id');
+                    var userName = button.data('name');
+                    var modal = $(this);
+                    modal.find('.modal-body').text('¿Estás seguro de desactivar al usuario "' + userName + '"?');
+                    modal.find('#deactivateForm').attr('action', '/admin/users/toggle-status/' + userId + '?activate=false');
+                });
+                
+                $('#activateModal').on('show.bs.modal', function(event) {
+                    var button = $(event.relatedTarget);
+                    var userId = button.data('id');
+                    var userName = button.data('name');
+                    var modal = $(this);
+                    modal.find('.modal-body').text('¿Estás seguro de activar al usuario "' + userName + '"?');
+                    modal.find('#activateForm').attr('action', '/admin/users/toggle-status/' + userId + '?activate=true');
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>

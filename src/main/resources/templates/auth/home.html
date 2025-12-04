@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/base}">
+<head>
+    <title>Inicio</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- Hero Section -->
+        <div class="jumbotron bg-primary text-white p-5 rounded mb-5">
+            <h1 class="display-4">
+                <i class="bi bi-book-half"></i> Plataforma Académica
+            </h1>
+            <p class="lead">
+                Sistema de gestión de usuarios y roles para instituciones educativas.
+            </p>
+            <hr class="my-4 bg-white">
+            <p sec:authorize="!isAuthenticated()">
+                Inicia sesión para acceder a todas las funcionalidades del sistema.
+            </p>
+            <p sec:authorize="isAuthenticated()">
+                Bienvenido <span sec:authentication="name"></span>.
+                Tu rol actual es: <span class="badge bg-light text-dark" sec:authentication="principal.authorities"></span>
+            </p>
+            <div class="mt-4">
+                <a sec:authorize="!isAuthenticated()" th:href="@{/login}" class="btn btn-light btn-lg me-2">
+                    <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                </a>
+                <a sec:authorize="!isAuthenticated()" th:href="@{/register}" class="btn btn-outline-light btn-lg me-2">
+                    <i class="bi bi-person-plus"></i> Registrarse
+                </a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/dashboard}" class="btn btn-light btn-lg">
+                    <i class="bi bi-speedometer2"></i> Ir al Dashboard
+                </a>
+            </div>
+        </div>
+        
+        <!-- Features -->
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-people-fill display-4 text-primary mb-3"></i>
+                        <h5 class="card-title">Gestión de Usuarios</h5>
+                        <p class="card-text">
+                            Administra estudiantes, profesores y administradores de manera centralizada.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-shield-lock display-4 text-success mb-3"></i>
+                        <h5 class="card-title">Control de Acceso</h5>
+                        <p class="card-text">
+                            Sistema de roles y permisos para restringir acceso a secciones específicas.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-graph-up display-4 text-warning mb-3"></i>
+                        <h5 class="card-title">Reportes y Consultas</h5>
+                        <p class="card-text">
+                            Consultas avanzadas y reportes detallados de la actividad del sistema.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Info if authenticated -->
+        <div sec:authorize="isAuthenticated()" class="row mt-5">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-info-circle"></i> Información de tu Cuenta</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Email:</strong> <span sec:authentication="name"></span></p>
+                                <p><strong>Rol:</strong> <span sec:authentication="principal.authorities"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Acciones disponibles:</strong></p>
+                                <ul>
+                                    <li sec:authorize="hasRole('ADMIN')">
+                                        <a th:href="@{/admin/users}">Gestionar Usuarios</a>
+                                    </li>
+                                    <li sec:authorize="hasRole('PROFESOR')">
+                                        <a th:href="@{/profesor/reportes}">Ver Reportes</a>
+                                    </li>
+                                    <li sec:authorize="hasRole('ESTUDIANTE')">
+                                        <a th:href="@{/estudiante/perfil}">Ver mi Perfil</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

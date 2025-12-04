@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+    <footer th:fragment="footer" class="footer mt-auto py-3 bg-dark text-white">
+        <div class="container text-center">
+            <span class="text-muted">
+                &copy; 2024 Plataforma Académica - Desarrollo de Aplicaciones Web y Patrones
+                | <span sec:authorize="isAuthenticated()">Usuario: <span sec:authentication="name"></span></span>
+            </span>
+            <br>
+            <small class="text-muted">AdbeelDemo - Ejercicio Práctico 2</small>
+        </div>
+    </footer>
+</body>
+</html>

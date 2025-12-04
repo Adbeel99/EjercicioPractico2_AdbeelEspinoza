@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+    <div th:fragment="sidebar-admin">
+        <div class="position-sticky pt-3">
+            <h5 class="text-center mt-3 mb-4">
+                <i class="bi bi-shield-check"></i> Panel Admin
+            </h5>
+            <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white" th:href="@{/admin/dashboard}">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white" th:href="@{/admin/users}">
+                        <i class="bi bi-people"></i> Gestión de Usuarios
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white" th:href="@{/admin/roles}">
+                        <i class="bi bi-shield-lock"></i> Gestión de Roles
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white" th:href="@{/admin/stats}">
+                        <i class="bi bi-graph-up"></i> Estadísticas
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white" th:href="@{/consultas/avanzadas}">
+                        <i class="bi bi-search"></i> Consultas Avanzadas
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white" th:href="@{/profesor/reportes}">
+                        <i class="bi bi-file-text"></i> Reportes
+                    </a>
+                </li>
+                <li class="nav-item mt-4">
+                    <div class="card bg-dark border-light">
+                        <div class="card-body">
+                            <h6 class="card-title">Usuario Actual</h6>
+                            <p class="card-text small">
+                                <span sec:authentication="name"></span><br>
+                                <span class="badge bg-success" sec:authentication="principal.authorities"></span>
+                            </p>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

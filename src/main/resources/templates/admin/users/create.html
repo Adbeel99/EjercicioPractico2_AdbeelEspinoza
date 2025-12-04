@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/base}">
+<head>
+    <title>Crear Usuario</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2">
+                <i class="bi bi-person-plus"></i> Crear Nuevo Usuario
+            </h1>
+            <a th:href="@{/admin/users}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <form th:action="@{/admin/users/create}" th:object="${userDTO}" method="post">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label">Nombre Completo *</label>
+                                    <input type="text" class="form-control" id="name" th:field="*{name}" 
+                                           placeholder="Nombre y apellidos" required>
+                                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('name')}">
+                                        <small th:errors="*{name}"></small>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="email" th:field="*{email}" 
+                                           placeholder="usuario@ejemplo.com" required>
+                                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('email')}">
+                                        <small th:errors="*{email}"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="password" class="form-label">Contraseña *</label>
+                                    <input type="password" class="form-control" id="password" th:field="*{password}" 
+                                           placeholder="Mínimo 6 caracteres" required>
+                                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('password')}">
+                                        <small th:errors="*{password}"></small>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="roleId" class="form-label">Rol *</label>
+                                    <select class="form-select" id="roleId" th:field="*{roleId}" required>
+                                        <option value="">Seleccione un rol...</option>
+                                        <option th:each="role : ${roles}" 
+                                                th:value="${role.id}"
+                                                th:text="${role.name}">
+                                        </option>
+                                    </select>
+                                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('roleId')}">
+                                        <small th:errors="*{roleId}"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="active" 
+                                           th:field="*{active}" checked>
+                                    <label class="form-check-label" for="active">
+                                        Usuario activo
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Crear Usuario
+                                </button>
+                                <a th:href="@{/admin/users}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h6><i class="bi bi-info-circle"></i> Información</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <strong>Notas importantes:</strong>
+                        </p>
+                        <ul class="small">
+                            <li>El email debe ser único en el sistema.</li>
+                            <li>La contraseña se encriptará automáticamente.</li>
+                            <li>Puedes asignar diferentes roles a los usuarios.</li>
+                            <li>Los usuarios inactivos no podrán iniciar sesión.</li>
+                        </ul>
+                        
+                        <div class="alert alert-info mt-3">
+                            <small>
+                                <i class="bi bi-lightbulb"></i>
+                                <strong>Sugerencia:</strong> 
+                                Usa contraseñas seguras con combinación de letras, números y símbolos.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
